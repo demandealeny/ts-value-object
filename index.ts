@@ -10,6 +10,7 @@ interface Cart {
 const totalCart = (cart: Cart) => {
   return cart.items
     .filter((item) => item.quantity > 0 && item.price > 0)
+    .filter((item) => item.quantity < Infinity && item.price < Infinity)
     .map((item) => item.quantity * item.price)
     .reduce((total, price) => total + price, 0);
 };
@@ -17,7 +18,7 @@ const totalCart = (cart: Cart) => {
 const cart: Cart = {
   items: [
     { price: 1, quantity: 2 },
-    { price: 10, quantity: -9 },
+    { price: 10, quantity: Infinity },
     { price: 100, quantity: 2 },
   ],
 };
