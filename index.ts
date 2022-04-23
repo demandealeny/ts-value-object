@@ -7,12 +7,18 @@ interface Cart {
   items: CartItem[];
 }
 
+const aboveZero = (item: CartItem) => item.quantity > 0 && item.price > 0;
+const belowInfinity = (item: CartItem) =>
+  item.quantity < Infinity && item.price < Infinity;
+const itemPrice = (item: CartItem) => item.quantity * item.price;
+const totalItemsPrice = (total: number, price: number) => total + price;
+
 const totalCart = (cart: Cart) => {
   return cart.items
-    .filter((item) => item.quantity > 0 && item.price > 0)
-    .filter((item) => item.quantity < Infinity && item.price < Infinity)
-    .map((item) => item.quantity * item.price)
-    .reduce((total, price) => total + price, 0);
+    .filter(aboveZero)
+    .filter(belowInfinity)
+    .map(itemPrice)
+    .reduce(totalItemsPrice, 0);
 };
 
 const cart: Cart = {
