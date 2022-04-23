@@ -9,7 +9,7 @@ interface Cart {
 
 const totalCart = (cart: Cart) => {
   return cart.items
-    .filter((item) => item.quantity > 0)
+    .filter((item) => item.quantity > 0 && item.price > 0)
     .map((item) => item.quantity * item.price)
     .reduce((total, price) => total + price, 0);
 };
