@@ -14,8 +14,13 @@ interface CartItem {
   quantity: Quantity;
 }
 
+interface UnsafeCartItem {
+  price?: Money;
+  quantity?: Quantity;
+}
+
 interface Cart {
-  items: CartItem[];
+  items: UnsafeCartItem[];
 }
 
 function isQuantity(quantity: any): quantity is Quantity {
@@ -40,16 +45,17 @@ function isMoney(price: any): price is Money {
   );
 }
 
-const byMoney = (item: CartItem) => isMoney(item.price);
-const byQuantity = (item: CartItem) => isQuantity(item.quantity);
+function safeCartItem(item: UnsafeCartItem): item is CartItem {
+  return isMoney(item.price) && isQuantity(item.quantity);
+}
+
 const itemPrice = (item: CartItem) => item.quantity.value * item.price.value;
 const totalItemsPrice = (total: number, price: number) => total + price;
 
 const totalCart = (cart: Cart) =>
   cart.items
-    .filter(byMoney)
-    .filter(byQuantity)
-    .map(itemPrice)
+    .filter(safeCartItem) // items = UnsafeCartItem[] (Array<UnsafeCartItem>)
+    .map(itemPrice) // items = CartItem[] (Array<CartItem>)
     .reduce(totalItemsPrice, 0);
 
 const cart: Cart = {
